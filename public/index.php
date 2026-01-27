@@ -1,6 +1,5 @@
 <?php
-echo "test error";
-die();
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;

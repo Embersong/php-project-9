@@ -6,9 +6,8 @@
 Test project "Анализатор страниц" for Hexlet "php" course
 
 ## Setup
-Setup SSH before clone:
-
 git clone https://github.com/Embersong/php-project-9
+
 cd php-project-9
 
 make install
@@ -18,7 +17,7 @@ make install
 
 ## Prerequisites
     Linux, Macos, WSL
-    PHP >=8.2
+    PHP >= 8.5
     Make
     Git
 

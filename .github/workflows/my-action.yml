@@ -1,31 +1,40 @@
 name: base-check
 
-on: push
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  checks: write
 
 jobs:
-  build-main:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - run: make install
-      - run: make lint
-
-  SonarQube:
-    name: SonarQube
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: make install
+        run: make install
+
       - name: Setup PHP with Xdebug
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
           coverage: xdebug
-      - name: Install dependencies with composer
-        run: composer update --no-ansi --no-interaction --no-progress
+
+      - name: make lint
+        run: make lint
+
       - name: SonarQube Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

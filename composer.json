@@ -17,9 +17,12 @@
         "slim/psr7": "^1.8",
         "slim/http": "^1.4",
         "slim/php-view": "^3.4",
-        "php-di/php-di": "^7.1"
+        "php-di/php-di": "^7.1",
+      "ext-pdo": "*",
+        "slim/flash": "^0.4.0"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^4.0"
+        "squizlabs/php_codesniffer": "^4.0",
+        "symfony/var-dumper": "^8.0"
     }
 }

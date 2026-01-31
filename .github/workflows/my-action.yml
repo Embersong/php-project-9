@@ -26,6 +26,6 @@ jobs:
       - name: Install dependencies with composer
         run: composer update --no-ansi --no-interaction --no-progress
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@40f5b61913e891f9d316696628698051136015be
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

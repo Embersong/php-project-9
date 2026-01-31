@@ -7,6 +7,8 @@ use DI\Container;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
 
+session_start();
+
 $container = new Container();
 $container->set('renderer', function () {
     return new PhpRenderer(__DIR__ . '/../templates');
@@ -36,8 +38,18 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'index.phtml', []);
-});
+$router = $app->getRouteCollector()->getRouteParser();
+
+$app->get('/', function ($request, $response) use ($router) {
+    $url = $request->getParsedBodyParam('url', ['name' => '']);
+
+    $params = [
+        'url' => $url,
+        'router' => $router,
+        'flash' => $this->get('flash')->getMessages()
+    ];
+
+    return $this->get('renderer')->render($response, 'index.phtml', $params);
+})->setName('home');
 
 $app->run();

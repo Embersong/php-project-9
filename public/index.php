@@ -103,7 +103,13 @@ $app->get('/urls', function ($request, $response) {
     $urlRepository = $this->get(UrlsRepository::class);
     $urls = $urlRepository->all();
 
-    return $this->get('renderer')->render($response, 'urls/index.phtml', ['urls' => $urls]);
+    $checksRepository = $this->get(UrlChecksRepository::class);
+    $latestChecks = $checksRepository->findLatestChecks();
+
+    return $this->get('renderer')->render($response, 'urls/index.phtml', [
+        'urls' => $urls,
+        'checks' => $latestChecks
+    ]);
 })->setName('urls.index');
 
 $app->get('/urls/{id:[0-9]+}', function ($request, $response, array $args) {

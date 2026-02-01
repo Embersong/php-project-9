@@ -70,7 +70,12 @@ class UrlChecksRepository
         $latestChecks = [];
 
         while ($row = $stmt->fetch()) {
-            $check = new UrlCheck();
+            $check = new UrlCheck(
+                $row['status_code'],
+                $row['title'],
+                $row['h1'],
+                $row['description']
+            );
             $url_id = $row['url_id'];
             $check->setId($row['id']);
             $check->setUrlId($url_id);

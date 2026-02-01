@@ -6,6 +6,8 @@
             <tr>
                 <th>ID</th>
                 <th>Имя</th>
+                <th>Последняя проверка</th>
+                <th>Код ответа</th>
             </tr>
             </thead>
             <tbody>
@@ -17,6 +19,9 @@
                             <?= htmlspecialchars($url->getName()) ?>
                         </a>
                     </td>
+                    <?php $check = $checks[$url->getId()] ?? null; ?>
+                    <td><?= $check ? htmlspecialchars($check->getCreatedAt()) : '' ?></td>
+                    <td><?= $check ? htmlspecialchars($check->getStatusCode()) : '' ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

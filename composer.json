@@ -19,7 +19,9 @@
         "slim/php-view": "^3.4",
         "php-di/php-di": "^7.1",
       "ext-pdo": "*",
-        "slim/flash": "^0.4.0"
+        "slim/flash": "^0.4.0",
+        "vlucas/valitron": "^1.4",
+        "nesbot/carbon": "^3.11"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^4.0",

@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анализатор страниц</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
 </head>
 <body class="min-vh-100 d-flex flex-column">
 <header class="flex-shrink-0">
@@ -29,6 +32,7 @@
         </div>
     </nav>
 </header>
+
 <main class="flex-grow-1">
     <div class="container-lg mt-3">
         <h1></h1>
@@ -36,19 +40,29 @@
             <div class="col-12 col-md-10 col-lg-8 mx-auto border rounded-3 bg-light p-5">
                 <h1 class="display-3">Анализатор страниц</h1>
                 <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
-                <form action="/urls" method="post" class="row">
+                <form action="<?= $router->urlFor('urls.create') ?>" method="post" class="row">
                     <div class="col-8">
                         <label for="text" class="visually-hidden">Url для проверки</label>
                         <input
-                            type="text"
-                            name="url[name]"
-                            value=""
-                            class="form-control form-control-lg"
-                            placeholder="https://www.example.com"
+                                type="text"
+                                name="url[name]"
+                                value="<?= htmlspecialchars($old['url']['name'] ?? '') ?>"
+                                class="form-control form-control-lg <?= !empty($errors) ? 'is-invalid' : '' ?>"
+                                placeholder="https://www.example.com"
                         >
+                        <?php if (!empty($errors)): ?>
+                            <div class="invalid-feedback" role="alert">
+                                <ul class="mb-0">
+                                    <?php foreach ($errors['url.name'] as $error): ?>
+                                        <li><?= htmlspecialchars($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif ?>
                     </div>
                     <div class="col-2">
-                        <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
+                        <input type="submit" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase mx-3"
+                               value="Проверить">
                     </div>
                 </form>
             </div>

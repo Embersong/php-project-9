@@ -65,6 +65,7 @@ class UrlChecksRepository
     {
         $sql = "SELECT DISTINCT ON (url_id) * from url_checks order by url_id DESC, id DESC";
 
+        /** @var \PDOStatement $stmt */
         $stmt = $this->connection->query($sql);
 
         $latestChecks = [];

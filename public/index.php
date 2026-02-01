@@ -24,7 +24,11 @@ $renderer->setLayout('layout.phtml');
 $container->set('flash', fn() => new Messages());
 
 $container->set(\PDO::class, function () {
-    $databaseUrl = parse_url(getenv('DATABASE_URL'));
+    $databaseUrl = parse_url(getenv('DATABASE_URL') ?: '');
+
+    if ($databaseUrl === false) {
+        throw new RuntimeException('Failed to parse DATABASE_URL or variable not set');
+    }
     $username = $databaseUrl['user'];
     $password = $databaseUrl['pass'];
     $host = $databaseUrl['host'];
@@ -60,7 +64,7 @@ $errorMiddleware = $app->addErrorMiddleware(
     logErrors: true,
     logErrorDetails: true
 );
-//$errorMiddleware->setDefaultErrorHandler($customErrorHandler);
+$errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 
 $app->get('/', function ($request, $response) use ($router) {
     return $this->get('renderer')->render($response, 'index.phtml');

@@ -33,6 +33,7 @@ class UrlsRepository
         $urls = [];
         $sql = "SELECT * FROM urls";
 
+        /** @var \PDOStatement $stmt */
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch()) {

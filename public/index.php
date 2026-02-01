@@ -49,7 +49,7 @@ $router = $app->getRouteCollector()->getRouteParser();
 $container->get('renderer')->addAttribute('router', $router);
 $container->get('renderer')->addAttribute('flash', $container->get('flash')->getMessages());
 
-$customErrorHandler = function ($request, $exception) use ($app, $router) {
+$customErrorHandler = function ($request, $exception) use ($app) {
     $response = $app->getResponseFactory()->createResponse();
 
     if ($exception instanceof HttpNotFoundException) {

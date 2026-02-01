@@ -24,7 +24,9 @@
     "nesbot/carbon": "^3.11",
     "guzzlehttp/guzzle": "*",
     "symfony/dom-crawler": "^7.4",
-    "symfony/css-selector": "^7.4"
+    "symfony/css-selector": "^7.4",
+    "symfony/http-client": "^7.4",
+    "symfony/console": "^7.4"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",

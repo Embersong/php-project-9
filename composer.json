@@ -1,31 +1,33 @@
 {
-    "name": "hexlet/code",
-    "description": "test project #3",
-    "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Embersong",
-            "email": "evebay@mail.ru"
-        }
-    ],
-    "require": {
-        "slim/slim": "^4.15",
-        "slim/psr7": "^1.8",
-        "slim/http": "^1.4",
-        "slim/php-view": "^3.4",
-        "php-di/php-di": "^7.1",
-      "ext-pdo": "*",
-        "slim/flash": "^0.4.0",
-        "vlucas/valitron": "^1.4",
-        "nesbot/carbon": "^3.11",
-        "guzzlehttp/guzzle": "*"
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^4.0",
-        "symfony/var-dumper": "^7.0"
+  "name": "hexlet/code",
+  "description": "test project #3",
+  "autoload": {
+    "psr-4": {
+      "Hexlet\\Code\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Embersong",
+      "email": "evebay@mail.ru"
+    }
+  ],
+  "require": {
+    "slim/slim": "^4.15",
+    "slim/psr7": "^1.8",
+    "slim/http": "^1.4",
+    "slim/php-view": "^3.4",
+    "php-di/php-di": "^7.1",
+    "ext-pdo": "*",
+    "slim/flash": "^0.4.0",
+    "vlucas/valitron": "^1.4",
+    "nesbot/carbon": "^3.11",
+    "guzzlehttp/guzzle": "*",
+    "symfony/dom-crawler": "^7.4",
+    "symfony/css-selector": "^7.4"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^4.0",
+    "symfony/var-dumper": "^7.0"
+  }
 }

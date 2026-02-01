@@ -12,6 +12,7 @@ use Slim\Factory\AppFactory;
 use DI\Container;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
+use Symfony\Component\DomCrawler\Crawler;
 
 session_start();
 
@@ -148,7 +149,15 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array 
 
     $statusCode = $clientResponse->getStatusCode();
 
-    $check = new UrlCheck($statusCode, 'test2', 'test2', 'test2');
+    $html = $clientResponse->getBody()->getContents();
+    $crawler = new Crawler($html);
+
+    $h1 = $crawler->filter('h1')->count() ? $crawler->filter('h1')->first()->text() : '';
+    $title = $crawler->filter('title')->count() ? $crawler->filter('title')->first()->text() : '';
+    $description = $crawler->filter('meta[name="description"]')->count()
+        ? $crawler->filter('meta[name="description"]')->first()->attr('content') : '';
+
+    $check = new UrlCheck($statusCode, $title, $h1, $description);
 
     $check->setUrlId($id);
     $checksRepository = $this->get(UrlChecksRepository::class);

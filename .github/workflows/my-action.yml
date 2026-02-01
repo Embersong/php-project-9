@@ -26,7 +26,7 @@ jobs:
         run: make install
 
       - name: Setup PHP with Xdebug
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v3
         with:
           php-version: '8.4'
           coverage: xdebug

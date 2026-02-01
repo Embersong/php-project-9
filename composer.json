@@ -23,7 +23,7 @@
     "vlucas/valitron": "^1.4",
     "nesbot/carbon": "^3.11",
     "guzzlehttp/guzzle": "*",
-    "symfony/dom-crawler": "^8.0",
+    "symfony/dom-crawler": "*",
     "symfony/css-selector": "^7.4",
     "symfony/http-client": "^7.4",
     "symfony/console": "^7.4"

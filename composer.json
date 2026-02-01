@@ -13,20 +13,20 @@
     }
   ],
   "require": {
-    "slim/slim": "^4.15",
-    "slim/psr7": "^1.8",
-    "slim/http": "^1.4",
-    "slim/php-view": "^3.4",
-    "php-di/php-di": "^7.1",
+    "slim/slim": "*",
+    "slim/psr7": "*",
+    "slim/http": "*",
+    "slim/php-view": "*",
+    "php-di/php-di": "*",
     "ext-pdo": "*",
-    "slim/flash": "^0.4.0",
-    "vlucas/valitron": "^1.4",
-    "nesbot/carbon": "^3.11",
+    "slim/flash": "*",
+    "vlucas/valitron": "*",
+    "nesbot/carbon": "*",
     "guzzlehttp/guzzle": "*",
     "symfony/dom-crawler": "*",
-    "symfony/css-selector": "^7.4",
-    "symfony/http-client": "^7.4",
-    "symfony/console": "^7.4"
+    "symfony/css-selector": "*",
+    "symfony/http-client": "*",
+    "symfony/console": "*"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",

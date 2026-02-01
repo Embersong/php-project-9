@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use Hexlet\Code\Url;
@@ -38,10 +38,6 @@ $container->set(\PDO::class, function () {
     $conn->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
     return $conn;
 });
-
-/*$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
-$initSql = file_get_contents($initFilePath);
-$container->get(\PDO::class)->exec($initSql);*/
 
 $app = AppFactory::createFromContainer($container);
 

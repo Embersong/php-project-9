@@ -29,10 +29,10 @@ $container->set(\PDO::class, function () {
     if ($databaseUrl === false) {
         throw new RuntimeException('Failed to parse DATABASE_URL or variable not set');
     }
-    $username = $databaseUrl['user'];
-    $password = $databaseUrl['pass'];
-    $host = $databaseUrl['host'];
-    $dbName = ltrim($databaseUrl['path'], '/');
+    $username = $databaseUrl['user'] ?? '';
+    $password = $databaseUrl['pass'] ?? '';
+    $host = $databaseUrl['host'] ?? 'localhost';
+    $dbName = isset($databaseUrl['path']) ? ltrim($databaseUrl['path'], '/') : '';
 
     $conn = new \PDO("pgsql:dbname=$dbName;host=$host", $username, $password);
     $conn->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
@@ -66,7 +66,7 @@ $errorMiddleware = $app->addErrorMiddleware(
 );
 $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 
-$app->get('/', function ($request, $response) use ($router) {
+$app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('home');
 
@@ -134,7 +134,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, array $args) {
     ]);
 })->setName('urls.show');
 
-$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array $args) use ($app, $router) {
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array $args) use ($router) {
     $id = $args['url_id'];
     $urlRepository = $this->get(UrlsRepository::class);
     $url = $urlRepository->find($id);
@@ -165,7 +165,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array 
     $h1 = $crawler->filter('h1')->count() ? $crawler->filter('h1')->first()->text() : '';
     $title = $crawler->filter('title')->count() ? $crawler->filter('title')->first()->text() : '';
     $description = $crawler->filter('meta[name="description"]')->count()
-        ? $crawler->filter('meta[name="description"]')->first()->attr('content') : '';
+        ? (string)$crawler->filter('meta[name="description"]')->first()->attr('content') : '';
 
     $check = new UrlCheck($statusCode, $title, $h1, $description);
 

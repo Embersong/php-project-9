@@ -66,7 +66,7 @@ $app->get('/', function ($request, $response) use ($router) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('home');
 
-$app->post('/', function ($request, $response) use ($router) {
+$app->post('/urls', function ($request, $response) use ($router) {
     $formData = (array)$request->getParsedBody();
     $validator = new Valitron\Validator($formData);
 

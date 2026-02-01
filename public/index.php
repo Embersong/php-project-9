@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Hexlet\Code\Url;
 use Hexlet\Code\UrlsRepository;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use DI\Container;
 use Slim\Flash\Messages;
@@ -27,15 +28,16 @@ $container->set(\PDO::class, function () {
     return $conn;
 });
 
-/*$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
+$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
 $initSql = file_get_contents($initFilePath);
-$container->get(\PDO::class)->exec($initSql);*/
+$container->get(\PDO::class)->exec($initSql);
 
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
 $router = $app->getRouteCollector()->getRouteParser();
 $container->get('renderer')->addAttribute('router', $router);
+$container->get('renderer')->addAttribute('flash', $container->get('flash')->getMessages());
 
 $app->get('/', function ($request, $response) use ($router) {
 
@@ -67,15 +69,33 @@ $app->post('/', function ($request, $response) use ($router) {
 
     if (isset($url)) {
         $this->get('flash')->addMessage('success', 'Страница уже существует');
-        dd('Страница уже существует');
     } else {
         $url = new Url($normalizedUrl);
         $urlRepository->save($url);
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
-        dd('Страница успешно добавлена');
     }
-    //$redirectUrl = $app->getRouteCollector()->getRouteParser()->urlFor('urls.show', ['id' => $url->getId()]);
-    //return $response->withRedirect($redirectUrl);
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => $url->getId()]), 302);
 })->setName('urls.create');
+
+$app->get('/urls', function ($request, $response) {
+    $urlRepository = $this->get(UrlsRepository::class);
+    $urls = $urlRepository->all();
+
+    return $this->get('renderer')->render($response, 'urls/index.phtml', ['urls' => $urls]);
+})->setName('urls.index');
+
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, array $args) {
+    $urslRepository = $this->get(UrlsRepository::class);
+
+    $url = $urslRepository->find($args['id']);
+
+    if (!$url) {
+        throw new HttpNotFoundException($request);
+    }
+
+    return $this->get('renderer')->render($response, 'urls/show.phtml', [
+        'url' => $url
+    ]);
+})->setName('urls.show');
 
 $app->run();

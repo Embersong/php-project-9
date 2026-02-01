@@ -21,7 +21,8 @@
       "ext-pdo": "*",
         "slim/flash": "^0.4.0",
         "vlucas/valitron": "^1.4",
-        "nesbot/carbon": "^3.11"
+        "nesbot/carbon": "^3.11",
+        "guzzlehttp/guzzle": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^4.0",

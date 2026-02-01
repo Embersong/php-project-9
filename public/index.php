@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use GuzzleHttp\Client;
 use Hexlet\Code\Url;
 use Hexlet\Code\UrlCheck;
 use Hexlet\Code\UrlChecksRepository;
@@ -38,14 +39,29 @@ $initSql = file_get_contents($initFilePath);
 $container->get(\PDO::class)->exec($initSql);*/
 
 $app = AppFactory::createFromContainer($container);
-$app->addErrorMiddleware(true, true, true);
 
 $router = $app->getRouteCollector()->getRouteParser();
 $container->get('renderer')->addAttribute('router', $router);
 $container->get('renderer')->addAttribute('flash', $container->get('flash')->getMessages());
 
-$app->get('/', function ($request, $response) use ($router) {
+$customErrorHandler = function ($request, $exception) use ($app, $router) {
+    $response = $app->getResponseFactory()->createResponse();
 
+    if ($exception instanceof HttpNotFoundException) {
+        return $this->get('renderer')->render($response->withStatus(404), 'errors/404.phtml');
+    }
+
+    return $this->get('renderer')->render($response->withStatus(500), 'errors/500.phtml');
+};
+
+$errorMiddleware = $app->addErrorMiddleware(
+    displayErrorDetails: true,
+    logErrors: true,
+    logErrorDetails: true
+);
+//$errorMiddleware->setDefaultErrorHandler($customErrorHandler);
+
+$app->get('/', function ($request, $response) use ($router) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('home');
 
@@ -116,7 +132,24 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array 
         throw new HttpNotFoundException($request);
     }
 
-    $check = new UrlCheck();
+    try {
+        $client = new Client(['connect_timeout' => 2.0]);
+
+        $clientResponse = $client->get($url->getName());
+        $this->get('flash')->addMessage('success', 'Страница успешно проверена');
+    } catch (GuzzleHttp\Exception\RequestException $e) {
+        $clientResponse = $e->getResponse();
+        $this->get('flash')->addMessage('warning', "Проверка была выполнена успешно, но сервер ответил с ошибкой");
+        return $response->withRedirect($router->urlFor('urls.show', ['id' => $url->getId()]), 302);
+    } catch (GuzzleHttp\Exception\ConnectException) {
+        $this->get('flash')->addMessage('error', "Произошла ошибка при проверке, не удалось подключиться");
+        return $response->withRedirect($router->urlFor('urls.show', ['id' => $url->getId()]), 302);
+    }
+
+    $statusCode = $clientResponse->getStatusCode();
+
+    $check = new UrlCheck($statusCode, 'test2', 'test2', 'test2');
+
     $check->setUrlId($id);
     $checksRepository = $this->get(UrlChecksRepository::class);
     $checksRepository->save($check);

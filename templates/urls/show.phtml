@@ -42,6 +42,10 @@
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Код ответа</th>
+                    <th>h1</th>
+                    <th>title</th>
+                    <th>description</th>
                     <th>Дата создания</th>
                 </tr>
                 </thead>
@@ -50,6 +54,10 @@
                     <?php foreach ($checks as $check): ?>
                         <tr>
                             <td><?= htmlspecialchars($check->getId()) ?></td>
+                            <td><?= htmlspecialchars($check->getStatusCode()) ?></td>
+                            <td class="text-break"><?= htmlspecialchars($check->getH1() ?? '') ?></td>
+                            <td class="text-break"><?= htmlspecialchars($check->getTitle() ?? '') ?></td>
+                            <td class="text-break"><?= htmlspecialchars($check->getDescription() ?? '') ?></td>
                             <td><?= htmlspecialchars($check->getCreatedAt()) ?></td>
                         </tr>
                     <?php endforeach; ?>

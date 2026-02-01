@@ -19,17 +19,19 @@ class UrlChecksRepository
         $stmt = $this->connection->prepare($sql);
         $createdAt = Carbon::now();
         $urlId = $check->getUrlId();
-        $statusCode = 200;
-        $h1 = 'test';
-        $title = 'test';
-        $description = 'test';
-        $stmt->bindParam(':urlId', $urlId);
-        $stmt->bindParam(':statusCode', $statusCode);
-        $stmt->bindParam(':h1', $h1);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':createdAt', $createdAt);
-        $stmt->execute();
+        $statusCode = $check->getStatusCode();
+        $h1 = $check->getH1();
+        $title = $check->getTitle();
+        $description = $check->getDescription();
+
+        $stmt->execute([
+            ':urlId' => $urlId,
+            ':statusCode' => $statusCode,
+            ':h1' => $h1,
+            ':title' => $title,
+            ':description' => $description,
+            ':createdAt' => $createdAt
+        ]);
         $id = (int) $this->connection->lastInsertId();
         $check->setId($id);
         $check->setCreatedAt($createdAt);
@@ -44,7 +46,12 @@ class UrlChecksRepository
         $stmt->execute([$urlId]);
 
         while ($row = $stmt->fetch()) {
-            $check = new UrlCheck();
+            $check = new UrlCheck(
+                $row['status_code'],
+                $row['title'],
+                $row['h1'],
+                $row['description']
+            );
             $check->setId($row['id']);
             $check->setUrlId($row['url_id']);
             $check->setCreatedAt($row['created_at']);

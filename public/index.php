@@ -3,6 +3,8 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Hexlet\Code\Url;
+use Hexlet\Code\UrlCheck;
+use Hexlet\Code\UrlChecksRepository;
 use Hexlet\Code\UrlsRepository;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
@@ -14,6 +16,9 @@ session_start();
 
 $container = new Container();
 $container->set('renderer', fn() => new PhpRenderer(__DIR__ . '/../templates'));
+$renderer = $container->get('renderer');
+$renderer->setLayout('layout.phtml');
+
 $container->set('flash', fn() => new Messages());
 
 $container->set(\PDO::class, function () {
@@ -28,9 +33,9 @@ $container->set(\PDO::class, function () {
     return $conn;
 });
 
-$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
+/*$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
 $initSql = file_get_contents($initFilePath);
-$container->get(\PDO::class)->exec($initSql);
+$container->get(\PDO::class)->exec($initSql);*/
 
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
@@ -85,17 +90,38 @@ $app->get('/urls', function ($request, $response) {
 })->setName('urls.index');
 
 $app->get('/urls/{id:[0-9]+}', function ($request, $response, array $args) {
-    $urslRepository = $this->get(UrlsRepository::class);
-
-    $url = $urslRepository->find($args['id']);
+    $id = $args['id'];
+    $urlRepository = $this->get(UrlsRepository::class);
+    $url = $urlRepository->find($id);
 
     if (!$url) {
         throw new HttpNotFoundException($request);
     }
 
+    $checksRepository = $this->get(UrlChecksRepository::class);
+    $checks = $checksRepository->findByUrlId($id);
+
     return $this->get('renderer')->render($response, 'urls/show.phtml', [
-        'url' => $url
+        'url' => $url,
+        'checks' => $checks
     ]);
 })->setName('urls.show');
+
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, array $args) use ($app, $router) {
+    $id = $args['url_id'];
+    $urlRepository = $this->get(UrlsRepository::class);
+    $url = $urlRepository->find($id);
+
+    if (!$url) {
+        throw new HttpNotFoundException($request);
+    }
+
+    $check = new UrlCheck();
+    $check->setUrlId($id);
+    $checksRepository = $this->get(UrlChecksRepository::class);
+    $checksRepository->save($check);
+
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => $url->getId()]), 302);
+})->setName('urls.checks.store');
 
 $app->run();
